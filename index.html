@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telegram Bot Link Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+            color: red;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, blue, green, yellow);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-attachment: fixed;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      width: 100%;
+      max-width: 450px;
+      border: 5px solid red;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    input, button {
+      width: 100%;
+      padding: 14px 18px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 24px;
+      outline: none;
+    }
+    input {
+      background: #f1f1f1;
+      color: red;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    input:focus {
+      background: black;
+      border: 3px solid red;
+      box-shadow: 0 0 8px rgba(108, 99, 255, 0.4);
+    }
+    button {
+      background: #6c63ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: red;
+      border-radius: 10px;
+      border: 4px solid blue;
+    }
+    .output {
+      margin-top: 20px;
+      background: #333;
+      padding: 12px;
+      border-radius: 8px;
+      word-wrap: break-word;
+      font-size: 14px;
+      word-break: break-all;
+      color: #fff;
+      text-align: center;
+    }
+    .output a {
+      color: #00e0ff;
+      text-decoration: none;
+    }
+    .output a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>টেলিগ্রাম বট লিংক জেনারেট করুন</h2>
+    <input type="text" id="token" placeholder="Bot Token লিখুন" required />
+    <input type="text" id="chatid" placeholder="Chat ID লিখুন" required />
+    <button onclick="generateLink()">লিংক তৈরি করুন</button>
+    <div class="output" id="result"></div>
+  </div>
+  <script>
+    function generateLink() {
+      const token = document.getElementById("token").value.trim();
+      const chatid = document.getElementById("chatid").value.trim();
+
+      if (!token || !chatid) {
+        alert("দয়া করে Bot Token এবং Chat ID পূরণ করুন।");
+        return;
+      }
+
+      // ইউনিক আইডি তৈরি
+      const uid = Math.random().toString(36).substring(2, 8);
+
+      // ডেটা তৈরি
+      const data = {
+        token: token,
+        chatid: chatid
+      };
+
+      // ইনফিনিটি ফ্রিতে JSON ফাইল সংরক্ষণের জন্য রিকোয়েস্ট পাঠানো
+      fetch(`https://your-infinityfree-domain/save.php?id=${uid}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.text())
+        .then(response => {
+          if (response === 'success') {
+            const link = `https://your-output-site.com/${uid}`;
+            document.getElementById("result").innerHTML = `জেনারেটেড লিংক: <a href="${link}" target="_blank">${link}</a>`;
+          } else {
+            document.getElementById("result").innerText = `সমস্যা হয়েছে: ${response}`;
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          document.getElementById("result").innerText = "ডেটা পাঠানো যায়নি।";
+        });
+    }
+  </script>
+  
+</body>
+</html>
