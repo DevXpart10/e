@@ -11,9 +11,8 @@
       box-sizing: border-box;
     }
     body {
-            color: red;
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, blue, green, yellow);
+      background: linear-gradient(135deg, #6c63ff, #5ec8f1);
       color: #fff;
       display: flex;
       justify-content: center;
@@ -23,7 +22,7 @@
       background-attachment: fixed;
     }
     .container {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1);
       padding: 30px;
       border-radius: 18px;
       box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
@@ -93,7 +92,7 @@
   <div class="container">
     <h2>টেলিগ্রাম বট লিংক জেনারেট করুন</h2>
     <input type="text" id="token" placeholder="Bot Token লিখুন" required />
-    <input type="number" id="chatid" placeholder="Chat ID লিখুন" required />
+    <input type="text" id="chatid" placeholder="Chat ID লিখুন" required />
     <button onclick="generateLink()">লিংক তৈরি করুন</button>
     <div class="output" id="result"></div>
   </div>
@@ -113,24 +112,25 @@
       // ডেটা তৈরি
       const data = {
         token: token,
-        chatid: chatid
+        chatid: chatid,
+        uid: uid
       };
 
       // ইনফিনিটি ফ্রিতে JSON ফাইল সংরক্ষণের জন্য রিকোয়েস্ট পাঠানো
-      fetch(`http://toolx.wuaze.com/save.php/save.php?id=${uid}`, {
+      fetch(`https://your-infinityfree-domain/save.php?id=${uid}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
       })
-        .then(res => res.text())
+        .then(res => res.json())  // .text() -> .json()
         .then(response => {
-          if (response === 'success') {
+          if (response.status === 'success') {
             const link = `https://your-output-site.com/${uid}`;
             document.getElementById("result").innerHTML = `জেনারেটেড লিংক: <a href="${link}" target="_blank">${link}</a>`;
           } else {
-            document.getElementById("result").innerText = `সমস্যা হয়েছে: ${response}`;
+            document.getElementById("result").innerText = `সমস্যা হয়েছে: ${response.message}`;
           }
         })
         .catch(error => {
@@ -139,6 +139,5 @@
         });
     }
   </script>
-  
 </body>
 </html>
